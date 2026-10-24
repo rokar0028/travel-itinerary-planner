@@ -24,6 +24,27 @@ function defaultStartDate(): string {
   return d.toISOString().slice(0, 10)
 }
 
+function formatDayDate(iso: string): string {
+  const d = new Date(iso + 'T12:00:00')
+  return d.toLocaleDateString('en-IN', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
+}
+
+function engineLabel(engine: NonNullable<GenerateItineraryResponse['engine']>): string {
+  switch (engine) {
+    case 'curated':
+      return 'Curated city guide'
+    case 'llm':
+      return 'AI-generated plan'
+    default:
+      return 'Smart template'
+  }
+}
+
 function App() {
   const [interests, setInterests] = useState<string[]>([])
   const [styles, setStyles] = useState<string[]>([])
@@ -123,7 +144,11 @@ function App() {
       setActiveTripId(null)
     } catch (e) {
       setPlan(null)
-      setError(e instanceof Error ? e.message : 'Failed to generate')
+      setError(
+        e instanceof Error
+          ? e.message
+          : 'Could not reach the API. Is the backend running?',
+      )
     } finally {
       setLoading(false)
     }
@@ -320,7 +345,19 @@ function App() {
           >
             {loading ? 'Generating…' : 'Generate itinerary'}
           </button>
-          {error && <p className="error">{error}</p>}
+          {!canGenerate && (
+            <p className="hint form-hint">
+              Add a destination and at least one interest to continue.
+            </p>
+          )}
+          {error && (
+            <div className="alert alert-error" role="alert">
+              <p>{error}</p>
+              <button type="button" className="link-btn" onClick={onGenerate}>
+                Try again
+              </button>
+            </div>
+          )}
 
           {accessToken && (
             <div className="my-trips">
@@ -353,17 +390,30 @@ function App() {
           )}
         </section>
 
-        <section className="panel results-panel">
-          {!plan ? (
+        <section className="panel results-panel" aria-busy={loading}>
+          {loading && !plan ? (
+            <div className="loading-state">
+              <div className="spinner" aria-hidden="true" />
+              <h2>Building your itinerary…</h2>
+              <p className="hint">Morning, afternoon, and evening slots for each day.</p>
+            </div>
+          ) : !plan ? (
             <div className="empty">
               <h2>Your plan appears here</h2>
               <p>Fill preferences and generate a personalized day-by-day itinerary.</p>
               <p className="hint">
-                Rich samples for Goa & Jaipur; other cities use a smart template.
+                Rich guides for Goa & Jaipur; other cities use a smart template (or AI when
+                configured on the API).
               </p>
             </div>
           ) : (
             <>
+              {loading && (
+                <div className="loading-overlay">
+                  <div className="spinner" aria-hidden="true" />
+                  <span>Updating…</span>
+                </div>
+              )}
               <div className="results-head">
                 <div>
                   <h2>
@@ -374,36 +424,51 @@ function App() {
                     {plan.budget_per_person_per_day_inr.toLocaleString('en-IN')}
                     /person/day
                   </p>
+                  {plan.engine && (
+                    <p className="engine-badge" data-engine={plan.engine}>
+                      {engineLabel(plan.engine)}
+                    </p>
+                  )}
                 </div>
                 <div className="actions">
-                  <button type="button" onClick={onExport}>
+                  <button type="button" onClick={onExport} disabled={loading}>
                     Export Markdown
                   </button>
                   {userId && (
-                    <button type="button" className="primary" onClick={onSaveTrip}>
+                    <button
+                      type="button"
+                      className="primary compact"
+                      onClick={onSaveTrip}
+                      disabled={loading}
+                    >
                       Save trip
                     </button>
                   )}
                 </div>
               </div>
-              {saveMsg && <p className="success">{saveMsg}</p>}
+              {saveMsg && (
+                <div className="alert alert-success" role="status">
+                  {saveMsg}
+                </div>
+              )}
               <div className="days">
                 {plan.itinerary.map((day) => (
                   <article key={day.day} className="day-card">
-                    <h3>
-                      Day {day.day} — {day.date}
-                    </h3>
+                    <header className="day-card-head">
+                      <span className="day-pill">Day {day.day}</span>
+                      <time dateTime={day.date}>{formatDayDate(day.date)}</time>
+                    </header>
                     <div className="slots">
-                      <div>
-                        <strong>Morning</strong>
+                      <div className="slot slot-morning">
+                        <span className="slot-label">Morning</span>
                         <p>{day.morning}</p>
                       </div>
-                      <div>
-                        <strong>Afternoon</strong>
+                      <div className="slot slot-afternoon">
+                        <span className="slot-label">Afternoon</span>
                         <p>{day.afternoon}</p>
                       </div>
-                      <div>
-                        <strong>Evening</strong>
+                      <div className="slot slot-evening">
+                        <span className="slot-label">Evening</span>
                         <p>{day.evening}</p>
                       </div>
                     </div>

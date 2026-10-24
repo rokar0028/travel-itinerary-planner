@@ -23,12 +23,15 @@ export interface DayPlan {
   tips: string
 }
 
+export type ItineraryEngine = 'curated' | 'llm' | 'template'
+
 export interface GenerateItineraryResponse {
   destination: string
   days: number
   style: string
   budget_per_person_per_day_inr: number
   itinerary: DayPlan[]
+  engine?: ItineraryEngine
 }
 
 export interface TripSummary {

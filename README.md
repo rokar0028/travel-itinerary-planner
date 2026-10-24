@@ -2,6 +2,8 @@
 
 Skill Wallet / SmartBridge capstone — **React + FastAPI + Supabase**.
 
+**Docs:** [SUBMISSION_PLAN.md](./SUBMISSION_PLAN.md) (submit checklist) · [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md) (epics) · [DEPLOY.md](./DEPLOY.md)
+
 ## Structure
 
 ```
@@ -78,6 +80,12 @@ In [Render env](https://dashboard.render.com/web/srv-dbeispnb9u1s739sbhsg) set `
 - Optional **Groq or OpenAI** on the API for non-curated cities (`GROQ_API_KEY` or `OPENAI_API_KEY` in `backend/.env`)
 - Markdown export
 - Optional Supabase magic-link auth + save/list trips (when configured)
+
+## Production smoke test
+
+```powershell
+.\scripts\verify-production.ps1
+```
 
 ## Backend tests
 

@@ -7,14 +7,14 @@ Skill Wallet / SmartBridge capstone. Target stack: **React (Vercel)** · **FastA
 - [x] Monorepo layout (`frontend/`, `backend/`, `supabase/`)
 - [x] Preference form + generate itinerary UI
 - [x] FastAPI `meta` + `generate` endpoints
-- [x] Goa/Jaipur sample engine + template fallback
+- [x] Goa/Jaipur curated day plans + template fallback (+ optional Groq/OpenAI)
 - [x] Markdown export (UI)
 - [x] Supabase migration SQL + save/list API (code)
 - [x] Auth (magic link) + save trip button (UI; needs Supabase env)
 - [x] Live Supabase project wired (env + migration applied locally)
 - [x] My trips UI (list/open saved plans)
 - [x] Production deploy (Vercel + Render) — CORS + Supabase redirect URLs pending
-- [ ] Final QA + Skill Wallet links
+- [ ] Final QA + Skill Wallet links → follow **[SUBMISSION_PLAN.md](./SUBMISSION_PLAN.md)**
 
 ---
 
@@ -64,8 +64,8 @@ cd frontend && npm install && npm run dev
 
 - [x] **3.1** Preference form (destination, dates, days, budget, style, interests, group size)
 - [x] **3.2** Shared request shape: `GenerateItineraryRequest` + `TripPreferences`
-- [x] **3.3** Rule-based engine v1 (`SAMPLE` + template fallback)
-- [ ] **3.4** *(Optional)* LLM engine for unknown cities (Gemini/OpenAI/Groq)
+- [x] **3.3** Rule-based engine v2 (curated Goa/Jaipur + interest template)
+- [x] **3.4** *(Optional)* LLM for non-curated cities (`GROQ_API_KEY` / `OPENAI_API_KEY` → `llm_itinerary.py`)
 
 **API (implemented):**
 
@@ -83,7 +83,7 @@ cd frontend && npm install && npm run dev
 - [x] **4.3** Style + interest-aware copy (budget line, interest picks)
 - [x] **4.4** Regenerate via **Generate itinerary** with same or updated preferences
 
-**Logic:** `backend/app/services/itinerary.py`
+**Logic:** `backend/app/services/itinerary.py` · optional LLM: `llm_itinerary.py`
 
 ---
 
@@ -98,8 +98,8 @@ cd frontend && npm install && npm run dev
 - [x] **5.2c** `GET /api/trips/{trip_id}` for full itinerary load
 - [x] **5.3a** Markdown export download implemented
 - [ ] **5.3b** Export manually tested in browser
-- [x] **5.4a** Basic errors (API failures, disabled generate when invalid)
-- [ ] **5.4b** Full edge-case pass (API down, auth required messaging)
+- [x] **5.4a** Errors + loading states (retry, invalid form hints, generate disabled)
+- [ ] **5.4b** Full edge-case pass in production (API down, 401 on save without auth)
 
 ---
 
@@ -129,10 +129,10 @@ Per course pre-requisites: **frontend → Vercel**, **backend → Render**.
 
 **Smoke checklist:**
 
-- [ ] Generate for Goa (rich sample content)
-- [ ] Generate for Jaipur (rich sample content)
-- [ ] Generate for a third city (template fallback)
-- [ ] Invalid input blocked (empty destination / no interests)
+- [x] Generate for Goa (curated copy in code; [ ] manual browser check)
+- [x] Generate for Jaipur (curated copy in code; [ ] manual browser check)
+- [x] Generate for a third city (template / LLM; [ ] manual browser check)
+- [x] Invalid input blocked (empty destination / no interests) — UI `canGenerate`
 - [x] Production build (`npm run build`)
 - [ ] API `/health` reachable from deployed frontend URL
 
@@ -145,20 +145,20 @@ Per course pre-requisites: **frontend → Vercel**, **backend → Render**.
 | 1 | Epic 2 (live Supabase) + Epic 5.2 (My trips UI) |
 | 2 | Epic 6 deploy + Epic 7 testing |
 
-Stretch: Epic 3.4 (LLM), Epic 4.2 (maps/routing).
+Stretch: Epic 4.2 (maps/routing).
 
-Rough effort: **~8–10 focused days** remaining (mostly Supabase wiring, My trips, deploy, QA).
+Rough effort: **~2–3 focused days** remaining (Supabase redirect + save E2E, CORS, Skill Wallet links, QA).
 
 ---
 
 ## Definition of done (capstone)
 
 - [x] Public GitHub repository — https://github.com/rokar0028/travel-itinerary-planner
-- [ ] Live React app (Vercel)
-- [ ] Live FastAPI (Render)
+- [x] Live React app (Vercel) — see Epic 6.2
+- [x] Live FastAPI (Render) — see Epic 6.1
 - [x] Supabase schema applied + RLS; [ ] authenticated save verified in browser
 - [x] Personalized multi-day itinerary from preferences
-- [x] Export (Markdown); saved trips API/UI partial (save yes, list UI no)
+- [x] Export (Markdown); saved trips API + **My trips** UI
 - [ ] Links added in Skill Wallet
 
 ---
@@ -166,10 +166,13 @@ Rough effort: **~8–10 focused days** remaining (mostly Supabase wiring, My tri
 ## File map (reference)
 
 ```
+SUBMISSION_PLAN.md         ← submit checklist (phases 0–4)
 IMPLEMENTATION_PLAN.md     ← this document
 README.md                  ← run & deploy instructions
+DEPLOY.md                  ← Render + Vercel steps
 backend/app/main.py        ← API routes
-backend/app/services/      ← itinerary + Supabase store
+backend/app/services/      ← itinerary, llm_itinerary, supabase_store
+backend/tests/             ← pytest (itinerary smoke)
 frontend/src/App.tsx       ← main UI
 supabase/migrations/       ← database SQL
 ```

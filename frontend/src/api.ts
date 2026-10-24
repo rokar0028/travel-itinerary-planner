@@ -35,12 +35,15 @@ export async function generateItinerary(
 
 export async function saveTrip(
   prefs: TripPreferences,
-  userId: string,
+  accessToken: string,
 ): Promise<{ trip_id: string }> {
   const res = await fetch(`${API_BASE}/api/trips`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ...prefs, user_id: userId }),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(prefs),
   })
   if (!res.ok) throw new Error(await parseError(res))
   return res.json() as Promise<{ trip_id: string }>

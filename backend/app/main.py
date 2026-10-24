@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
@@ -6,7 +6,6 @@ from app.models import (
     DayPlan,
     GenerateItineraryRequest,
     GenerateItineraryResponse,
-    SaveTripRequest,
     TripSummary,
 )
 from app.services import itinerary as itinerary_service
@@ -24,9 +23,37 @@ app.add_middleware(
 )
 
 
+def bearer_token(authorization: str | None = Header(default=None)) -> str:
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(401, "Missing or invalid Authorization header")
+    return authorization.removeprefix("Bearer ").strip()
+
+
+def supabase_user_client(token: str = Depends(bearer_token)):
+    if not settings.supabase_configured or not settings.supabase_anon_key:
+        raise HTTPException(
+            503,
+            "Supabase anon key required for authenticated trips (set SUPABASE_ANON_KEY).",
+        )
+    try:
+        user_id = supabase_store.verify_access_token(
+            settings.supabase_url, settings.supabase_anon_key, token
+        )
+    except ValueError as e:
+        raise HTTPException(401, str(e)) from e
+    client = supabase_store.get_user_client(
+        settings.supabase_url, settings.supabase_anon_key, token
+    )
+    return client, user_id
+
+
 @app.get("/health")
 def health():
-    return {"status": "ok", "supabase": settings.supabase_configured}
+    return {
+        "status": "ok",
+        "supabase": settings.supabase_configured,
+        "auth_mode": "user_jwt" if settings.supabase_anon_key else "service_role",
+    }
 
 
 @app.get("/api/meta")
@@ -59,19 +86,17 @@ def generate_itinerary(body: GenerateItineraryRequest):
 
 
 @app.post("/api/trips", response_model=dict)
-def save_trip(body: SaveTripRequest):
-    if not settings.supabase_configured:
-        raise HTTPException(503, "Supabase is not configured on the server.")
-
+def save_trip(
+    body: GenerateItineraryRequest,
+    auth: tuple = Depends(supabase_user_client),
+):
+    client, user_id = auth
     gen = generate_itinerary(body)
-    client = supabase_store.get_client(settings.supabase_url, settings.supabase_service_key)
-    trip_id = supabase_store.save_trip(client, body.user_id, body, gen.itinerary)
+    trip_id = supabase_store.save_trip(client, user_id, body, gen.itinerary)
     return {"trip_id": trip_id, "itinerary": gen.itinerary}
 
 
 @app.get("/api/trips", response_model=list[TripSummary])
-def get_trips(user_id: str):
-    if not settings.supabase_configured:
-        raise HTTPException(503, "Supabase is not configured on the server.")
-    client = supabase_store.get_client(settings.supabase_url, settings.supabase_service_key)
+def get_trips(auth: tuple = Depends(supabase_user_client)):
+    client, user_id = auth
     return supabase_store.list_trips(client, user_id)

@@ -36,10 +36,13 @@ Optional: copy `.env.example` → `frontend/.env.local` and `backend/.env` when 
 
 ## Supabase
 
-1. Create a project at [supabase.com](https://supabase.com).
-2. Run `supabase/migrations/001_initial.sql` in the SQL editor.
-3. Enable Email auth (magic link) if you want save/sign-in.
-4. Set env vars (see `.env.example`).
+**Project:** `travel-itinerary-planner` → `https://ysvrbkesdwmkmuqlrthd.supabase.co`  
+Dashboard: https://supabase.com/dashboard/project/ysvrbkesdwmkmuqlrthd
+
+1. Migration `001_initial` is applied (tables: `trips`, `trip_interests`, `itinerary_days`, `profiles`).
+2. **Auth → URL configuration:** add `http://localhost:5173` to **Site URL** and **Redirect URLs** (add your Vercel URL when deployed).
+3. **Authentication → Providers:** Email enabled (magic link).
+4. Copy keys into `backend/.env` and `frontend/.env.local` (see `.env.example`). Backend uses **anon key + user JWT** for save/list (RLS-safe); service role is optional.
 
 ## Deploy
 

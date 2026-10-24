@@ -32,6 +32,7 @@ function App() {
   const [error, setError] = useState<string | null>(null)
   const [userEmail, setUserEmail] = useState<string | null>(null)
   const [userId, setUserId] = useState<string | null>(null)
+  const [accessToken, setAccessToken] = useState<string | null>(null)
   const [authBusy, setAuthBusy] = useState(false)
   const [saveMsg, setSaveMsg] = useState<string | null>(null)
 
@@ -66,10 +67,12 @@ function App() {
     supabase.auth.getSession().then(({ data }) => {
       setUserId(data.session?.user.id ?? null)
       setUserEmail(data.session?.user.email ?? null)
+      setAccessToken(data.session?.access_token ?? null)
     })
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
       setUserId(session?.user.id ?? null)
       setUserEmail(session?.user.email ?? null)
+      setAccessToken(session?.access_token ?? null)
     })
     return () => sub.subscription.unsubscribe()
   }, [])
@@ -113,11 +116,11 @@ function App() {
   }
 
   async function onSaveTrip() {
-    if (!userId || !plan) return
+    if (!userId || !accessToken || !plan) return
     setSaveMsg(null)
     setError(null)
     try {
-      const { trip_id } = await saveTrip(prefs, userId)
+      const { trip_id } = await saveTrip(prefs, accessToken)
       setSaveMsg(`Trip saved (${trip_id.slice(0, 8)}…).`)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Save failed')

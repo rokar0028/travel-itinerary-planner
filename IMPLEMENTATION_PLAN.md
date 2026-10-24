@@ -11,7 +11,7 @@ Skill Wallet / SmartBridge capstone. Target stack: **React (Vercel)** · **FastA
 - [x] Markdown export (UI)
 - [x] Supabase migration SQL + save/list API (code)
 - [x] Auth (magic link) + save trip button (UI; needs Supabase env)
-- [ ] Live Supabase project wired (env + migration applied)
+- [x] Live Supabase project wired (env + migration applied locally)
 - [ ] My trips UI (list/open saved plans)
 - [ ] Production deploy (Vercel + Render)
 - [ ] Final QA + Skill Wallet links
@@ -46,12 +46,13 @@ cd frontend && npm install && npm run dev
 
 **Goal:** Persist trips per user with row-level security.
 
-- [ ] **2.1** Create Supabase project (URL + keys)
+- [x] **2.1** Supabase project `travel-itinerary-planner` (ref `ysvrbkesdwmkmuqlrthd`)
 - [x] **2.2a** Migration authored: `supabase/migrations/001_initial.sql`
-- [ ] **2.2b** Migration applied; tables visible in Supabase dashboard
-- [ ] **2.3** Email magic link enabled; redirect URLs for localhost + Vercel
-- [ ] **2.4** Backend `.env`: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `CORS_ORIGINS` → `/health` shows `"supabase": true`
-- [ ] **2.5** Frontend `.env.local`: `VITE_SUPABASE_*`, `VITE_API_URL` → save trip works end-to-end
+- [x] **2.2b** Migration applied (`trips`, `trip_interests`, `itinerary_days`, `profiles`)
+- [ ] **2.3** Redirect URLs in dashboard: `http://localhost:5173` (+ Vercel when live)
+- [x] **2.4** Backend `.env`: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `CORS_ORIGINS`
+- [x] **2.5** Frontend `.env.local`: `VITE_SUPABASE_*`, `VITE_API_URL`
+- [ ] **2.6** Save trip verified end-to-end (sign in → generate → save)
 
 **Tables:** `profiles`, `trips`, `trip_interests`, `itinerary_days` (RLS policies included in migration).
 
@@ -154,7 +155,7 @@ Rough effort: **~8–10 focused days** remaining (mostly Supabase wiring, My tri
 - [x] Public GitHub repository — https://github.com/rokar0028/travel-itinerary-planner
 - [ ] Live React app (Vercel)
 - [ ] Live FastAPI (Render)
-- [ ] Supabase schema applied + RLS + authenticated save working
+- [x] Supabase schema applied + RLS; [ ] authenticated save verified in browser
 - [x] Personalized multi-day itinerary from preferences
 - [x] Export (Markdown); saved trips API/UI partial (save yes, list UI no)
 - [ ] Links added in Skill Wallet

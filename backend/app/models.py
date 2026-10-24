@@ -39,10 +39,6 @@ class GenerateItineraryResponse(BaseModel):
     itinerary: list[DayPlan]
 
 
-class SaveTripRequest(GenerateItineraryRequest):
-    user_id: str = Field(min_length=1)
-
-
 class TripSummary(BaseModel):
     id: str
     destination: str

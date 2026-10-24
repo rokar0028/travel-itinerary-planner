@@ -17,7 +17,7 @@ $headers = curl.exe -s -I -X OPTIONS "$ApiUrl/api/meta" `
   -H "Origin: $origin" `
   -H "Access-Control-Request-Method: GET" 2>&1
 $allow = $headers | Select-String 'access-control-allow-origin'
-if ($allow) { Write-Host "  OK $allow" } else { Write-Host "  FAIL — set CORS_ORIGINS on Render" }
+if ($allow) { Write-Host "  OK $allow" } else { Write-Host "  FAIL - set CORS_ORIGINS on Render" }
 
 Write-Host "Generate Goa (checks curated engine + copy)"
 $bodyPath = Join-Path $PSScriptRoot 'verify-generate-body.json'
@@ -26,7 +26,7 @@ $gen = $raw | ConvertFrom-Json
 if ($gen.engine -eq 'curated' -and $gen.itinerary[0].morning.Length -gt 40) {
   Write-Host "  OK engine=curated, rich morning copy"
 } else {
-  Write-Host "  STALE API — push main to GitHub and redeploy Render (old generator still live)"
+  Write-Host "  STALE API - push main to GitHub and redeploy Render (old generator still live)"
   Write-Host "  morning: $($gen.itinerary[0].morning)"
 }
 

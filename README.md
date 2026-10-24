@@ -87,6 +87,13 @@ In [Render env](https://dashboard.render.com/web/srv-dbeispnb9u1s739sbhsg) set `
 .\scripts\verify-production.ps1
 ```
 
+## Wire production (Phase 2)
+
+```powershell
+# Optional: $env:RENDER_API_KEY, $env:SUPABASE_ACCESS_TOKEN for full automation
+.\scripts\configure-phase2.ps1
+```
+
 ## Backend tests
 
 ```bash

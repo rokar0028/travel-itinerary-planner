@@ -33,6 +33,8 @@ Run: `.\scripts\verify-production.ps1` (health, CORS, API version sniff).
 
 **CLI option (Windows):** see [DEPLOY.md](./DEPLOY.md) — `.\scripts\deploy-all.ps1` if auto-deploy is off.
 
+**Phase 2 one-shot:** `.\scripts\configure-phase2.ps1` (Vercel env, Render CORS, optional Supabase auth via `SUPABASE_ACCESS_TOKEN`).
+
 ---
 
 ## Phase 2 — Production triangle (30 min)
@@ -47,8 +49,8 @@ Wire frontend → API → Supabase so generate and save work on the **deployed**
 | `VITE_SUPABASE_URL` | `https://ysvrbkesdwmkmuqlrthd.supabase.co` |
 | `VITE_SUPABASE_ANON_KEY` | Supabase → Settings → API → anon (public) |
 
-- [ ] **2A.1** All three set for **Production**
-- [ ] **2A.2** Redeploy frontend
+- [x] **2A.1** All three set for **Production**
+- [x] **2A.2** Redeploy frontend
 
 **Verify:** Browser DevTools → Network → generate request host is `onrender.com`, not `localhost`.
 

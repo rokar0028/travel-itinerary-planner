@@ -12,10 +12,10 @@
 
 Run: `.\scripts\verify-production.ps1` (health, CORS, API version sniff).
 
-- [ ] **0.1** Confirm local `main` is pushed to GitHub (`git status` clean, `git push`).
-- [ ] **0.2** Wait for Render + Vercel deploys to finish after push.
-- [ ] **0.3** API health: open Render `/health` → `status: ok`.
-- [ ] **0.4** Note your **exact** Vercel production URL (copy from Vercel dashboard).
+- [x] **0.1** Confirm local `main` is pushed to GitHub (`git status` clean, `git push`).
+- [x] **0.2** Wait for Render + Vercel deploys to finish after push.
+- [x] **0.3** API health: open Render `/health` → `status: ok`.
+- [x] **0.4** Note your **exact** Vercel production URL (copy from Vercel dashboard).
 
 **Done when:** GitHub has latest commits; health URL responds.
 
@@ -23,11 +23,11 @@ Run: `.\scripts\verify-production.ps1` (health, CORS, API version sniff).
 
 ## Phase 1 — Ship latest code (15 min)
 
-- [ ] **1.1** Commit any pending docs (`IMPLEMENTATION_PLAN.md`, this file) if desired.
-- [ ] **1.2** `git push origin main`
-- [ ] **1.3** Vercel: confirm deployment succeeded (commit matches GitHub).
-- [ ] **1.4** Render: confirm deployment succeeded.
-- [ ] **1.5** On Vercel site: generate **Goa** → see **Curated city guide** + full morning/afternoon/evening cards (not old short placeholders).
+- [x] **1.1** Commit any pending docs (`IMPLEMENTATION_PLAN.md`, this file) if desired.
+- [x] **1.2** `git push origin main`
+- [x] **1.3** Vercel: confirm deployment succeeded (commit matches GitHub).
+- [x] **1.4** Render: confirm deployment succeeded.
+- [x] **1.5** On Vercel site: generate **Goa** → see **Curated city guide** + full morning/afternoon/evening cards (not old short placeholders).
 
 **Done when:** Live app matches your local improvements.
 
@@ -60,8 +60,8 @@ Wire frontend → API → Supabase so generate and save work on the **deployed**
 | `SUPABASE_ANON_KEY` | Same anon key |
 | `CORS_ORIGINS` | `{VERCEL_URL},http://localhost:5173` (comma-separated, exact origins) |
 
-- [ ] **2B.1** `CORS_ORIGINS` includes **exact** Vercel production URL
-- [ ] **2B.2** Redeploy API
+- [x] **2B.1** `CORS_ORIGINS` includes **exact** Vercel production URL
+- [x] **2B.2** Redeploy API
 
 **Verify:** Generate from Vercel with no CORS errors in console.
 
@@ -91,7 +91,7 @@ Run in **incognito** on the **Vercel** URL. Record pass/fail.
 | 5 | Generate → **Save trip** | Success message (no 401/503) |
 | 6 | Refresh → **My trips** | Trip listed; open → same itinerary |
 
-- [ ] **3.1** Steps 1–3 (guest path) — **required for minimum submit**
+- [x] **3.1** Steps 1–3 (guest path) — **required for minimum submit**
 - [ ] **3.2** Steps 4–6 (auth + save) — **required for full capstone story**
 - [ ] **3.3** Optional: **Jaipur** + one other city (template or AI badge)
 

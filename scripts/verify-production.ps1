@@ -19,21 +19,9 @@ $headers = curl.exe -s -I -X OPTIONS "$ApiUrl/api/meta" `
 $allow = $headers | Select-String 'access-control-allow-origin'
 if ($allow) { Write-Host "  OK $allow" } else { Write-Host "  FAIL — set CORS_ORIGINS on Render" }
 
-$body = @{
-  destination = 'Goa'
-  start_date  = '2026-11-01'
-  days        = 2
-  budget_inr  = 15000
-  style       = 'Balanced'
-  interests   = @('Food & street eats')
-  group_size  = 2
-} | ConvertTo-Json -Compress
-
-$tmp = Join-Path $env:TEMP 'trip-generate-test.json'
-[System.IO.File]::WriteAllText($tmp, $body)
 Write-Host "Generate Goa (checks curated engine + copy)"
-$raw = curl.exe -s -X POST "$ApiUrl/api/itinerary/generate" -H 'Content-Type: application/json' --data-binary "@$tmp"
-Remove-Item $tmp -ErrorAction SilentlyContinue
+$bodyPath = Join-Path $PSScriptRoot 'verify-generate-body.json'
+$raw = curl.exe -s -X POST "$ApiUrl/api/itinerary/generate" -H 'Content-Type: application/json' --data-binary "@$bodyPath"
 $gen = $raw | ConvertFrom-Json
 if ($gen.engine -eq 'curated' -and $gen.itinerary[0].morning.Length -gt 40) {
   Write-Host "  OK engine=curated, rich morning copy"

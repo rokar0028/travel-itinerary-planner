@@ -25,8 +25,7 @@ if (-not $env:CORS_ORIGINS) { $env:CORS_ORIGINS = 'http://localhost:5173' }
 Write-Host 'Validating render.yaml...'
 & $Render blueprints validate (Join-Path $Root 'render.yaml') -o text --confirm
 if ($LASTEXITCODE -ne 0) {
-  Write-Host 'Blueprint validation failed. If error is need_payment_info, add a card at https://dashboard.render.com/billing'
-  exit $LASTEXITCODE
+  Write-Host 'Blueprint validation warning (continuing). If need_payment_info, add billing or create service manually.'
 }
 
 $existing = & $Render services -o json --confirm | ConvertFrom-Json

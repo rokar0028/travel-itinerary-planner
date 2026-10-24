@@ -53,7 +53,14 @@ Step-by-step: **[DEPLOY.md](./DEPLOY.md)** (Render API first, then Vercel).
 | Backend  | Render | Root blueprint: `render.yaml` → `backend/` |
 | Frontend | Vercel | Root Directory: `frontend`, `VITE_*` env   |
 
-After both are live, set Render `CORS_ORIGINS` and Supabase redirect URLs to your Vercel domain.
+**Live (CLI deploy):**
+
+| | URL |
+|---|-----|
+| Frontend | https://frontend-three-sage-86vb7v4ibz.vercel.app |
+| API | https://travel-itinerary-api-vb27.onrender.com |
+
+In [Render env](https://dashboard.render.com/web/srv-dbeispnb9u1s739sbhsg) set `CORS_ORIGINS` to your Vercel URL + `http://localhost:5173`, then redeploy. Add the Vercel URL to Supabase **Redirect URLs**.
 
 ## Features
 

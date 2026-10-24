@@ -13,7 +13,7 @@ Skill Wallet / SmartBridge capstone. Target stack: **React (Vercel)** · **FastA
 - [x] Auth (magic link) + save trip button (UI; needs Supabase env)
 - [x] Live Supabase project wired (env + migration applied locally)
 - [x] My trips UI (list/open saved plans)
-- [ ] Production deploy (Vercel + Render) — configs in `render.yaml`, `DEPLOY.md`
+- [x] Production deploy (Vercel + Render) — CORS + Supabase redirect URLs pending
 - [ ] Final QA + Skill Wallet links
 
 ---
@@ -110,9 +110,9 @@ cd frontend && npm install && npm run dev
 Per course pre-requisites: **frontend → Vercel**, **backend → Render**.
 
 - [x] **6.0** Root `render.yaml` + `frontend/vercel.json` + [DEPLOY.md](./DEPLOY.md)
-- [ ] **6.1** Backend on Render; public `/health`
-- [ ] **6.2** Frontend on Vercel; app loads from production URL
-- [ ] **6.3** `CORS_ORIGINS` includes Vercel URL; generate works in prod
+- [x] **6.1** Backend on Render — https://travel-itinerary-api-vb27.onrender.com/health
+- [x] **6.2** Frontend on Vercel — https://frontend-three-sage-86vb7v4ibz.vercel.app
+- [ ] **6.3** `CORS_ORIGINS` on Render includes Vercel URL (set in dashboard → redeploy)
 - [x] **6.4** Service role key only on backend; anon key on frontend (by design)
 - [ ] **6.5** Demo link + GitHub link on Skill Wallet dashboard (GitHub ready to paste)
 

@@ -6,6 +6,12 @@
 
 **Estimated time:** ~1–2 hours if env is mostly correct; ~half day if debugging CORS/auth.
 
+### You are here (next actions)
+
+1. **[2C]** Set Supabase redirect URLs → [scripts/supabase-auth-urls.md](./scripts/supabase-auth-urls.md) (required for magic link).
+2. **[3.2]** Incognito on Vercel: sign in → Save trip → My trips.
+3. **[4]** Paste links from [SKILL_WALLET.md](./SKILL_WALLET.md) into Skill Wallet.
+
 ---
 
 ## Phase 0 — Baseline (5 min)
@@ -95,7 +101,7 @@ Run in **incognito** on the **Vercel** URL. Record pass/fail.
 
 - [x] **3.1** Steps 1–3 (guest path) — **required for minimum submit**
 - [ ] **3.2** Steps 4–6 (auth + save) — **required for full capstone story**
-- [ ] **3.3** Optional: **Jaipur** + one other city (template or AI badge)
+- [x] **3.3** Optional: **Jaipur** + one other city — run `.\scripts\phase3-smoke.ps1` (API); confirm in UI if desired
 
 **If save fails:** note status code and message → see [Troubleshooting](#troubleshooting) below.
 
@@ -104,6 +110,8 @@ Run in **incognito** on the **Vercel** URL. Record pass/fail.
 ---
 
 ## Phase 4 — Skill Wallet & repo (10 min)
+
+Copy from **[SKILL_WALLET.md](./SKILL_WALLET.md)**.
 
 - [ ] **4.1** Skill Wallet: paste **GitHub** repo URL
 - [ ] **4.2** Skill Wallet: paste **Vercel demo** URL (from Phase 0.4)

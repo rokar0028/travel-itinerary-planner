@@ -434,7 +434,7 @@ function App() {
                   <button type="button" onClick={onExport} disabled={loading}>
                     Export Markdown
                   </button>
-                  {userId && (
+                  {userId ? (
                     <button
                       type="button"
                       className="primary compact"
@@ -443,6 +443,12 @@ function App() {
                     >
                       Save trip
                     </button>
+                  ) : (
+                    supabaseConfigured && (
+                      <p className="hint save-hint">
+                        Sign in with magic link (top right) to save this trip.
+                      </p>
+                    )
                   )}
                 </div>
               </div>

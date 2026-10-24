@@ -254,6 +254,13 @@ button.primary.compact {
   width: auto;
 }
 
+.save-hint {
+  margin: 0;
+  max-width: 14rem;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
 .actions {
   display: flex;
   gap: 0.5rem;

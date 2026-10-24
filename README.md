@@ -2,7 +2,7 @@
 
 Skill Wallet / SmartBridge capstone — **React + FastAPI + Supabase**.
 
-**Docs:** [SUBMISSION_PLAN.md](./SUBMISSION_PLAN.md) (submit checklist) · [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md) (epics) · [DEPLOY.md](./DEPLOY.md)
+**Docs:** [SUBMISSION_PLAN.md](./SUBMISSION_PLAN.md) · [SKILL_WALLET.md](./SKILL_WALLET.md) · [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md) · [DEPLOY.md](./DEPLOY.md)
 
 ## Structure
 

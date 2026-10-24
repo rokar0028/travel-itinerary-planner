@@ -30,7 +30,7 @@ $body = @{
 } | ConvertTo-Json -Compress
 
 $tmp = Join-Path $env:TEMP 'trip-generate-test.json'
-Set-Content -Path $tmp -Value $body -Encoding utf8NoBOM
+[System.IO.File]::WriteAllText($tmp, $body)
 Write-Host "Generate Goa (checks curated engine + copy)"
 $raw = curl.exe -s -X POST "$ApiUrl/api/itinerary/generate" -H 'Content-Type: application/json' --data-binary "@$tmp"
 Remove-Item $tmp -ErrorAction SilentlyContinue

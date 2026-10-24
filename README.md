@@ -30,9 +30,17 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:5173 — API defaults to `http://localhost:8000`.
+Open http://localhost:5173 — API defaults to `http://localhost:8000` (override with `VITE_API_URL`).
 
-Optional: copy `.env.example` → `frontend/.env.local` and `backend/.env` when Supabase is ready.
+**Env files (never commit real keys):**
+
+| File | Purpose |
+|------|---------|
+| `.env.example` | Template at repo root |
+| `backend/.env` | `SUPABASE_*`, `CORS_ORIGINS`, optional `GROQ_API_KEY` / `OPENAI_API_KEY` |
+| `frontend/.env.local` | `VITE_API_URL`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` |
+
+Guests can generate and export trips without Supabase. Sign-in + save requires both frontend and backend Supabase vars.
 
 ## Supabase
 
@@ -65,6 +73,16 @@ In [Render env](https://dashboard.render.com/web/srv-dbeispnb9u1s739sbhsg) set `
 ## Features
 
 - Preference form (destination, dates, budget, style, interests, group size)
-- Day-by-day itinerary generation (Goa/Jaipur samples + template fallback)
+- Day-by-day cards with **morning / afternoon / evening** slots
+- **Goa & Jaipur** curated guides; other cities use a **smart template**
+- Optional **Groq or OpenAI** on the API for non-curated cities (`GROQ_API_KEY` or `OPENAI_API_KEY` in `backend/.env`)
 - Markdown export
-- Optional Supabase auth + trip save (when configured)
+- Optional Supabase magic-link auth + save/list trips (when configured)
+
+## Backend tests
+
+```bash
+cd backend
+pip install -r requirements.txt
+python -m pytest tests/ -q
+```

@@ -45,11 +45,42 @@ Deploy **backend first**, then **frontend** (frontend needs the API URL).
 - **GitHub:** https://github.com/rokar0028/travel-itinerary-planner  
 - **Demo:** your Vercel URL  
 
-## CLI (optional)
+## CLI (Windows PowerShell)
 
-```bash
-# Frontend (from frontend/)
-npx vercel --prod
+### One-time setup
 
-# Backend: use Render dashboard or Blueprint (no CLI required)
+1. **Render billing:** add a payment method at [Render Billing](https://dashboard.render.com/billing) (required even for free tier — blueprint validation error `need_payment_info` until this is done).
+2. **CLI tools:**
+   ```powershell
+   cd travel-itinerary-planner
+   .\scripts\setup-cli.ps1
+   .\.tools\render-v2\render.exe login
+   cd frontend
+   npx vercel login
+   ```
+3. Ensure `backend/.env` and `frontend/.env.local` exist (see `.env.example`).
+
+### Deploy
+
+```powershell
+# API only (creates service or triggers redeploy)
+.\scripts\deploy-render.ps1
+
+# Frontend (set VITE_API_URL to your Render URL)
+$env:VITE_API_URL = "https://travel-itinerary-api.onrender.com"
+.\scripts\deploy-vercel.ps1
+
+# Or interactive full flow
+.\scripts\deploy-all.ps1
 ```
+
+**Non-interactive CI:** set `RENDER_API_KEY` and `VERCEL_TOKEN` env vars; Render CLI uses the API key automatically.
+
+After Vercel is live:
+
+```powershell
+.\scripts\update-render-cors.ps1 -VercelUrl "https://your-app.vercel.app"
+.\scripts\deploy-render.ps1
+```
+
+Add the Vercel URL to Supabase **Redirect URLs**.

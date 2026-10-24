@@ -25,7 +25,8 @@ Skill Wallet / SmartBridge capstone. Target stack: **React (Vercel)** · **FastA
 - [x] **1.1** Node 18+ and Python 3.10+ available on dev machine
 - [x] **1.2a** Project scaffolding (React/Vite, FastAPI, folder structure)
 - [x] **1.2b** `.gitignore` and `.env.example` in repo
-- [ ] **1.2c** Public GitHub repo + URL added in Skill Wallet
+- [x] **1.2c** Public GitHub repo: https://github.com/rokar0028/travel-itinerary-planner
+- [ ] **1.2d** GitHub URL added in Skill Wallet dashboard
 - [x] **1.3** Local run documented; frontend production build passes (`npm run build`)
 
 **Commands:**
@@ -111,7 +112,7 @@ Per course pre-requisites: **frontend → Vercel**, **backend → Render**.
 - [ ] **6.2** Frontend on Vercel; app loads from production URL
 - [ ] **6.3** `CORS_ORIGINS` includes Vercel URL; generate works in prod
 - [x] **6.4** Service role key only on backend; anon key on frontend (by design)
-- [ ] **6.5** Demo link + GitHub link on Skill Wallet dashboard
+- [ ] **6.5** Demo link + GitHub link on Skill Wallet dashboard (GitHub ready to paste)
 
 ---
 
@@ -150,7 +151,7 @@ Rough effort: **~8–10 focused days** remaining (mostly Supabase wiring, My tri
 
 ## Definition of done (capstone)
 
-- [ ] Public GitHub repository
+- [x] Public GitHub repository — https://github.com/rokar0028/travel-itinerary-planner
 - [ ] Live React app (Vercel)
 - [ ] Live FastAPI (Render)
 - [ ] Supabase schema applied + RLS + authenticated save working

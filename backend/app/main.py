@@ -10,6 +10,7 @@ from app.models import (
     TripSummary,
 )
 from app.services import itinerary as itinerary_service
+from app.services import llm_itinerary
 from app.services import supabase_store
 
 settings = get_settings()
@@ -67,7 +68,7 @@ def meta():
 
 @app.post("/api/itinerary/generate", response_model=GenerateItineraryResponse)
 def generate_itinerary(body: GenerateItineraryRequest):
-    raw = itinerary_service.build_itinerary(
+    raw, engine = llm_itinerary.generate_itinerary_with_fallback(
         body.destination,
         body.start_date,
         body.days,
@@ -83,6 +84,7 @@ def generate_itinerary(body: GenerateItineraryRequest):
         style=body.style,
         budget_per_person_per_day_inr=per_day,
         itinerary=[DayPlan(**d) for d in raw],
+        engine=engine,
     )
 
 

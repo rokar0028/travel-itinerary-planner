@@ -37,6 +37,7 @@ class GenerateItineraryResponse(BaseModel):
     style: str
     budget_per_person_per_day_inr: int
     itinerary: list[DayPlan]
+    engine: Literal["curated", "llm", "template"] = "template"
 
 
 class TripSummary(BaseModel):

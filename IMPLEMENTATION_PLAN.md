@@ -13,7 +13,7 @@ Skill Wallet / SmartBridge capstone. Target stack: **React (Vercel)** · **FastA
 - [x] Auth (magic link) + save trip button (UI; needs Supabase env)
 - [x] Live Supabase project wired (env + migration applied locally)
 - [x] My trips UI (list/open saved plans)
-- [ ] Production deploy (Vercel + Render)
+- [ ] Production deploy (Vercel + Render) — configs in `render.yaml`, `DEPLOY.md`
 - [ ] Final QA + Skill Wallet links
 
 ---
@@ -109,7 +109,7 @@ cd frontend && npm install && npm run dev
 
 Per course pre-requisites: **frontend → Vercel**, **backend → Render**.
 
-- [x] **6.0** `backend/render.yaml` deploy template
+- [x] **6.0** Root `render.yaml` + `frontend/vercel.json` + [DEPLOY.md](./DEPLOY.md)
 - [ ] **6.1** Backend on Render; public `/health`
 - [ ] **6.2** Frontend on Vercel; app loads from production URL
 - [ ] **6.3** `CORS_ORIGINS` includes Vercel URL; generate works in prod

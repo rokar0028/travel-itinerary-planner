@@ -46,12 +46,14 @@ Dashboard: https://supabase.com/dashboard/project/ysvrbkesdwmkmuqlrthd
 
 ## Deploy
 
+Step-by-step: **[DEPLOY.md](./DEPLOY.md)** (Render API first, then Vercel).
+
 | Layer    | Host   | Notes                                      |
 |----------|--------|--------------------------------------------|
-| Frontend | Vercel | Root: `frontend`, set `VITE_*` env vars    |
-| Backend  | Render | Use `backend/render.yaml` or manual web svc |
+| Backend  | Render | Root blueprint: `render.yaml` → `backend/` |
+| Frontend | Vercel | Root Directory: `frontend`, `VITE_*` env   |
 
-Set `CORS_ORIGINS` on the API to your Vercel URL.
+After both are live, set Render `CORS_ORIGINS` and Supabase redirect URLs to your Vercel domain.
 
 ## Features
 

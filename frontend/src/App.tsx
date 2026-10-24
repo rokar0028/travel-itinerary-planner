@@ -3,10 +3,19 @@ import {
   exportItineraryMarkdown,
   fetchMeta,
   generateItinerary,
+  getTrip,
+  listTrips,
   saveTrip,
+  tripDetailToPlan,
+  tripDetailToPrefs,
 } from './api'
 import { supabase, supabaseConfigured } from './lib/supabase'
-import type { GenerateItineraryResponse, TravelStyle, TripPreferences } from './types'
+import type {
+  GenerateItineraryResponse,
+  TravelStyle,
+  TripPreferences,
+  TripSummary,
+} from './types'
 import './App.css'
 
 function defaultStartDate(): string {
@@ -35,6 +44,9 @@ function App() {
   const [accessToken, setAccessToken] = useState<string | null>(null)
   const [authBusy, setAuthBusy] = useState(false)
   const [saveMsg, setSaveMsg] = useState<string | null>(null)
+  const [savedTrips, setSavedTrips] = useState<TripSummary[]>([])
+  const [tripsLoading, setTripsLoading] = useState(false)
+  const [activeTripId, setActiveTripId] = useState<string | null>(null)
 
   useEffect(() => {
     fetchMeta()
@@ -77,6 +89,25 @@ function App() {
     return () => sub.subscription.unsubscribe()
   }, [])
 
+  useEffect(() => {
+    if (!accessToken) {
+      setSavedTrips([])
+      setActiveTripId(null)
+      return
+    }
+    setTripsLoading(true)
+    listTrips(accessToken)
+      .then(setSavedTrips)
+      .catch(() => setSavedTrips([]))
+      .finally(() => setTripsLoading(false))
+  }, [accessToken])
+
+  async function refreshTrips() {
+    if (!accessToken) return
+    const trips = await listTrips(accessToken)
+    setSavedTrips(trips)
+  }
+
   const canGenerate = useMemo(
     () => prefs.destination.trim().length > 0 && prefs.interests.length > 0,
     [prefs],
@@ -89,6 +120,7 @@ function App() {
     try {
       const result = await generateItinerary(prefs)
       setPlan(result)
+      setActiveTripId(null)
     } catch (e) {
       setPlan(null)
       setError(e instanceof Error ? e.message : 'Failed to generate')
@@ -121,7 +153,9 @@ function App() {
     setError(null)
     try {
       const { trip_id } = await saveTrip(prefs, accessToken)
+      setActiveTripId(trip_id)
       setSaveMsg(`Trip saved (${trip_id.slice(0, 8)}…).`)
+      await refreshTrips()
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Save failed')
     }
@@ -137,6 +171,23 @@ function App() {
     a.download = `${plan.destination.replace(/\s+/g, '-').toLowerCase()}-itinerary.md`
     a.click()
     URL.revokeObjectURL(url)
+  }
+
+  async function onOpenTrip(tripId: string) {
+    if (!accessToken) return
+    setError(null)
+    setSaveMsg(null)
+    setLoading(true)
+    try {
+      const detail = await getTrip(tripId, accessToken)
+      setPrefs(tripDetailToPrefs(detail))
+      setPlan(tripDetailToPlan(detail))
+      setActiveTripId(tripId)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not load trip')
+    } finally {
+      setLoading(false)
+    }
   }
 
   function toggleInterest(interest: string) {
@@ -270,6 +321,36 @@ function App() {
             {loading ? 'Generating…' : 'Generate itinerary'}
           </button>
           {error && <p className="error">{error}</p>}
+
+          {accessToken && (
+            <div className="my-trips">
+              <h3>My trips</h3>
+              {tripsLoading ? (
+                <p className="hint">Loading saved trips…</p>
+              ) : savedTrips.length === 0 ? (
+                <p className="hint">No saved trips yet. Generate and save one.</p>
+              ) : (
+                <ul className="trip-list">
+                  {savedTrips.map((trip) => (
+                    <li key={trip.id}>
+                      <button
+                        type="button"
+                        className={
+                          activeTripId === trip.id ? 'trip-item active' : 'trip-item'
+                        }
+                        onClick={() => onOpenTrip(trip.id)}
+                      >
+                        <strong>{trip.destination}</strong>
+                        <span>
+                          {trip.days}d · {trip.start_date}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
         </section>
 
         <section className="panel results-panel">

@@ -6,6 +6,7 @@ from app.models import (
     DayPlan,
     GenerateItineraryRequest,
     GenerateItineraryResponse,
+    TripDetail,
     TripSummary,
 )
 from app.services import itinerary as itinerary_service
@@ -100,3 +101,12 @@ def save_trip(
 def get_trips(auth: tuple = Depends(supabase_user_client)):
     client, user_id = auth
     return supabase_store.list_trips(client, user_id)
+
+
+@app.get("/api/trips/{trip_id}", response_model=TripDetail)
+def get_trip(trip_id: str, auth: tuple = Depends(supabase_user_client)):
+    client, _user_id = auth
+    detail = supabase_store.get_trip(client, trip_id)
+    if not detail:
+        raise HTTPException(404, "Trip not found")
+    return detail

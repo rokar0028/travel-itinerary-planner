@@ -1,7 +1,10 @@
 import type {
   GenerateItineraryResponse,
   MetaResponse,
+  TripDetail,
   TripPreferences,
+  TripSummary,
+  TravelStyle,
 } from './types'
 
 const API_BASE = import.meta.env.VITE_API_URL ?? ''
@@ -31,6 +34,53 @@ export async function generateItinerary(
   })
   if (!res.ok) throw new Error(await parseError(res))
   return res.json() as Promise<GenerateItineraryResponse>
+}
+
+function authHeaders(accessToken: string): HeadersInit {
+  return {
+    Authorization: `Bearer ${accessToken}`,
+  }
+}
+
+export async function listTrips(accessToken: string): Promise<TripSummary[]> {
+  const res = await fetch(`${API_BASE}/api/trips`, {
+    headers: authHeaders(accessToken),
+  })
+  if (!res.ok) throw new Error(await parseError(res))
+  return res.json() as Promise<TripSummary[]>
+}
+
+export async function getTrip(
+  tripId: string,
+  accessToken: string,
+): Promise<TripDetail> {
+  const res = await fetch(`${API_BASE}/api/trips/${tripId}`, {
+    headers: authHeaders(accessToken),
+  })
+  if (!res.ok) throw new Error(await parseError(res))
+  return res.json() as Promise<TripDetail>
+}
+
+export function tripDetailToPlan(detail: TripDetail): GenerateItineraryResponse {
+  return {
+    destination: detail.destination,
+    days: detail.days,
+    style: detail.style,
+    budget_per_person_per_day_inr: detail.budget_per_person_per_day_inr,
+    itinerary: detail.itinerary,
+  }
+}
+
+export function tripDetailToPrefs(detail: TripDetail): TripPreferences {
+  return {
+    destination: detail.destination,
+    start_date: detail.start_date,
+    days: detail.days,
+    budget_inr: detail.budget_inr,
+    style: detail.style as TravelStyle,
+    interests: detail.interests.length ? detail.interests : ['History & culture'],
+    group_size: detail.group_size,
+  }
 }
 
 export async function saveTrip(

@@ -48,3 +48,9 @@ class TripSummary(BaseModel):
     style: str
     group_size: int
     created_at: str | None = None
+
+
+class TripDetail(TripSummary):
+    interests: list[str]
+    itinerary: list[DayPlan]
+    budget_per_person_per_day_inr: int

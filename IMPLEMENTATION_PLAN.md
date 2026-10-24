@@ -12,7 +12,7 @@ Skill Wallet / SmartBridge capstone. Target stack: **React (Vercel)** · **FastA
 - [x] Supabase migration SQL + save/list API (code)
 - [x] Auth (magic link) + save trip button (UI; needs Supabase env)
 - [x] Live Supabase project wired (env + migration applied locally)
-- [ ] My trips UI (list/open saved plans)
+- [x] My trips UI (list/open saved plans)
 - [ ] Production deploy (Vercel + Render)
 - [ ] Final QA + Skill Wallet links
 
@@ -93,8 +93,9 @@ cd frontend && npm install && npm run dev
 
 - [x] **5.1a** `POST /api/trips` + **Save trip** in UI (after sign-in)
 - [ ] **5.1b** Verified row persisted in live Supabase
-- [x] **5.2a** `GET /api/trips?user_id=` backend endpoint
-- [ ] **5.2b** **My trips** UI (list + open saved itinerary)
+- [x] **5.2a** `GET /api/trips` backend endpoint
+- [x] **5.2b** **My trips** UI (list + open saved itinerary)
+- [x] **5.2c** `GET /api/trips/{trip_id}` for full itinerary load
 - [x] **5.3a** Markdown export download implemented
 - [ ] **5.3b** Export manually tested in browser
 - [x] **5.4a** Basic errors (API failures, disabled generate when invalid)

@@ -2,7 +2,7 @@ from datetime import date
 
 from supabase import Client, create_client
 
-from app.models import DayPlan, GenerateItineraryRequest, TripSummary
+from app.models import DayPlan, GenerateItineraryRequest, TripDetail, TripSummary
 
 
 def get_admin_client(url: str, key: str) -> Client:
@@ -92,3 +92,56 @@ def list_trips(client: Client, user_id: str) -> list[TripSummary]:
             )
         )
     return out
+
+
+def get_trip(client: Client, trip_id: str) -> TripDetail | None:
+    trip_res = client.table("trips").select("*").eq("id", trip_id).execute()
+    if not trip_res.data:
+        return None
+    r = trip_res.data[0]
+
+    interest_rows = (
+        client.table("trip_interests")
+        .select("interest")
+        .eq("trip_id", trip_id)
+        .execute()
+    )
+    interests = [row["interest"] for row in interest_rows.data or []]
+
+    day_rows = (
+        client.table("itinerary_days")
+        .select("day_number, plan_date, morning, afternoon, evening, tips")
+        .eq("trip_id", trip_id)
+        .order("day_number")
+        .execute()
+    )
+    itinerary = [
+        DayPlan(
+            day=row["day_number"],
+            date=date.fromisoformat(row["plan_date"]),
+            morning=row["morning"],
+            afternoon=row["afternoon"],
+            evening=row["evening"],
+            tips=row["tips"],
+        )
+        for row in day_rows.data or []
+    ]
+
+    days = int(r["days"])
+    group_size = int(r["group_size"])
+    budget_inr = int(r["budget_inr"])
+    per_day = max(1, int(budget_inr / max(days, 1) / max(group_size, 1)))
+
+    return TripDetail(
+        id=r["id"],
+        destination=r["destination"],
+        start_date=date.fromisoformat(r["start_date"]),
+        days=days,
+        budget_inr=budget_inr,
+        style=r["style"],
+        group_size=group_size,
+        created_at=r.get("created_at"),
+        interests=interests,
+        itinerary=itinerary,
+        budget_per_person_per_day_inr=per_day,
+    )

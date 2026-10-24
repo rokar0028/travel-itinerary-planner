@@ -207,3 +207,41 @@ button:disabled {
   font-style: italic;
   color: #64748b;
 }
+
+.my-trips {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.my-trips h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.trip-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.trip-item {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.55rem 0.65rem;
+}
+
+.trip-item span {
+  font-size: 0.82rem;
+  color: #64748b;
+}
+
+.trip-item.active {
+  border-color: #0284c7;
+  background: #e0f2fe;
+}

@@ -374,6 +374,16 @@ button:disabled {
 .results-panel {
   position: relative;
   min-height: 420px;
+  scroll-margin-top: 1rem;
+}
+
+.results-panel:focus {
+  outline: none;
+}
+
+.results-panel:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 .loading-state,
@@ -517,7 +527,20 @@ button:disabled {
 }
 
 button.primary.compact {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
   width: auto;
+}
+
+.btn-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
 }
 
 .btn-export {
@@ -537,11 +560,50 @@ button.primary.compact {
   color: #fff;
 }
 
-.save-hint {
+.results-tools {
+  display: grid;
+  justify-items: end;
+  gap: 0.55rem;
+  max-width: 18rem;
+}
+
+.save-prompt {
   margin: 0;
-  max-width: 16rem;
-  font-size: 0.82rem;
+  padding: 0.7rem 0.8rem;
+  border-radius: 12px;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #9a3412;
+  font-size: 0.86rem;
   line-height: 1.4;
+}
+
+.save-prompt strong {
+  display: block;
+  margin-bottom: 0.15rem;
+}
+
+.toast {
+  position: fixed;
+  z-index: 30;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  width: min(420px, calc(100% - 2rem));
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  margin: 0;
+  padding: 0.8rem 0.9rem;
+  border-radius: 14px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  box-shadow: 0 16px 40px rgba(6, 95, 70, 0.16);
+}
+
+.toast p {
+  margin: 0.15rem 0 0;
 }
 
 .actions {
@@ -817,12 +879,15 @@ button.primary.compact {
     align-items: stretch;
   }
 
-  .actions {
+  .results-tools,
+  .actions,
+  .save-prompt {
     width: 100%;
+    max-width: none;
+    justify-items: stretch;
   }
 
-  .actions button,
-  .save-hint {
+  .actions button {
     width: 100%;
     max-width: none;
   }
@@ -838,7 +903,8 @@ button.primary.compact {
 
 @media (prefers-reduced-motion: reduce) {
   .spinner,
-  .skeleton {
+  .skeleton,
+  .btn-spinner {
     animation: none;
   }
 }

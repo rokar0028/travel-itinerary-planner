@@ -1,5 +1,5 @@
 import type { Session } from '@supabase/supabase-js'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   exportItineraryMarkdown,
   fetchMeta,
@@ -83,6 +83,9 @@ function App() {
     trips: [],
   })
   const [activeTripId, setActiveTripId] = useState<string | null>(null)
+  const [resultsAnnounce, setResultsAnnounce] = useState('')
+  const resultsRef = useRef<HTMLElement>(null)
+  const scrollToResults = useRef(false)
 
   const savedTrips =
     accessToken && tripList.token === accessToken ? tripList.trips : []
@@ -176,6 +179,21 @@ function App() {
     }
   }
 
+  useEffect(() => {
+    if (!scrollToResults.current || !plan) return
+    scrollToResults.current = false
+    const node = resultsRef.current
+    if (!node) return
+    const reduceMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches
+    node.scrollIntoView({
+      behavior: reduceMotion ? 'auto' : 'smooth',
+      block: 'start',
+    })
+    node.focus({ preventScroll: true })
+  }, [plan, resultsAnnounce])
+
   const canGenerate = useMemo(
     () => prefs.destination.trim().length > 0 && prefs.interests.length > 0,
     [prefs],
@@ -190,6 +208,10 @@ function App() {
       const result = await generateItinerary(prefs)
       setPlan(result)
       setActiveTripId(null)
+      scrollToResults.current = true
+      setResultsAnnounce(
+        `${result.destination}, ${result.days}-day itinerary ready.`,
+      )
     } catch (e) {
       setPlan(null)
       setError(
@@ -219,6 +241,10 @@ function App() {
     } finally {
       setAuthBusy(false)
     }
+  }
+
+  function onSaveSignedOut() {
+    document.getElementById('magic-link-email')?.focus()
   }
 
   async function onSaveTrip() {
@@ -498,7 +524,16 @@ function App() {
             )}
           </section>
 
-          <section className="panel results-panel" aria-busy={loading}>
+          <section
+            ref={resultsRef}
+            id="itinerary-results"
+            className="panel results-panel"
+            tabIndex={-1}
+            aria-busy={loading}
+          >
+            <p className="sr-only" role="status" aria-live="polite">
+              {resultsAnnounce}
+            </p>
             {loading && !plan ? (
               <div className="loading-state">
                 <div className="spinner" aria-hidden="true" />
@@ -550,45 +585,54 @@ function App() {
                       </p>
                     )}
                   </div>
-                  <div className="actions">
-                    <button
-                      type="button"
-                      className="btn-export"
-                      onClick={onExport}
-                      disabled={loading}
-                    >
-                      <DownloadIcon />
-                      Export Markdown
-                    </button>
-                    {userId ? (
+                  <div className="results-tools">
+                    <div className="actions">
                       <button
                         type="button"
-                        className="primary compact"
-                        onClick={onSaveTrip}
-                        disabled={loading || saveState === 'saving'}
+                        className="btn-export"
+                        onClick={onExport}
+                        disabled={loading}
                       >
-                        {saveState === 'saving' ? 'Saving…' : 'Save trip'}
+                        <DownloadIcon />
+                        Export Markdown
                       </button>
-                    ) : (
-                      supabaseConfigured && (
-                        <p className="hint save-hint">
-                          Sign in with the email link above to save this trip.
-                        </p>
-                      )
+                      {(userId || supabaseConfigured) && (
+                        <button
+                          type="button"
+                          className="primary compact"
+                          onClick={userId ? onSaveTrip : onSaveSignedOut}
+                          disabled={loading || saveState === 'saving'}
+                          aria-describedby={
+                            userId ? undefined : 'save-sign-in-prompt'
+                          }
+                        >
+                          {saveState === 'saving' ? (
+                            <>
+                              <span className="btn-spinner" aria-hidden="true" />
+                              Saving…
+                            </>
+                          ) : (
+                            'Save trip'
+                          )}
+                        </button>
+                      )}
+                    </div>
+                    {!userId && supabaseConfigured && (
+                      <p className="save-prompt" id="save-sign-in-prompt">
+                        <strong>Sign in to save</strong>
+                        Use the email link above. You can still export this plan.
+                      </p>
                     )}
                   </div>
                 </div>
                 {saveState === 'saved' && savedLabel && (
-                  <div className="alert alert-success" role="status">
+                  <div className="toast" role="status">
                     <span className="success-mark" aria-hidden="true">
                       ✓
                     </span>
                     <div>
-                      <strong>Trip saved</strong>
-                      <p>
-                        {savedLabel} is in My trips. Open it again from the list
-                        whenever you need it.
-                      </p>
+                      <strong>Saved!</strong>
+                      <p>{savedLabel} is in My trips.</p>
                     </div>
                   </div>
                 )}
@@ -729,6 +773,7 @@ function AuthPanel({
       <label className="auth-field">
         <span className="sr-only">Email for magic link</span>
         <input
+          id="magic-link-email"
           type="email"
           required
           placeholder="Email for magic link"

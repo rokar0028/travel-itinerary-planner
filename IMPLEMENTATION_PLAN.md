@@ -13,8 +13,8 @@ Skill Wallet / SmartBridge capstone. Target stack: **React (Vercel)** · **FastA
 - [x] Auth (magic link) + save trip button (UI; needs Supabase env)
 - [x] Live Supabase project wired (env + migration applied locally)
 - [x] My trips UI (list/open saved plans)
-- [x] Production deploy (Vercel + Render) — CORS + Supabase redirect URLs pending
-- [ ] Final QA + Skill Wallet links → follow **[SUBMISSION_PLAN.md](./SUBMISSION_PLAN.md)**
+- [x] Production deploy (Vercel + Render) — CORS + Supabase redirect URLs configured
+- [x] Final QA + Skill Wallet links — see **[SUBMISSION_PLAN.md](./SUBMISSION_PLAN.md)**
 
 ---
 
@@ -26,7 +26,7 @@ Skill Wallet / SmartBridge capstone. Target stack: **React (Vercel)** · **FastA
 - [x] **1.2a** Project scaffolding (React/Vite, FastAPI, folder structure)
 - [x] **1.2b** `.gitignore` and `.env.example` in repo
 - [x] **1.2c** Public GitHub repo: https://github.com/rokar0028/travel-itinerary-planner
-- [ ] **1.2d** GitHub URL added in Skill Wallet dashboard
+- [x] **1.2d** GitHub URL added in Skill Wallet dashboard
 - [x] **1.3** Local run documented; frontend production build passes (`npm run build`)
 
 **Commands:**
@@ -49,10 +49,10 @@ cd frontend && npm install && npm run dev
 - [x] **2.1** Supabase project `travel-itinerary-planner` (ref `ysvrbkesdwmkmuqlrthd`)
 - [x] **2.2a** Migration authored: `supabase/migrations/001_initial.sql`
 - [x] **2.2b** Migration applied (`trips`, `trip_interests`, `itinerary_days`, `profiles`)
-- [ ] **2.3** Redirect URLs in dashboard: `http://localhost:5173` (+ Vercel when live)
+- [x] **2.3** Redirect URLs in dashboard: `http://localhost:5173` (+ Vercel when live)
 - [x] **2.4** Backend `.env`: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `CORS_ORIGINS`
 - [x] **2.5** Frontend `.env.local`: `VITE_SUPABASE_*`, `VITE_API_URL`
-- [ ] **2.6** Save trip verified end-to-end (sign in → generate → save)
+- [x] **2.6** Save trip verified end-to-end (sign in → generate → save)
 
 **Tables:** `profiles`, `trips`, `trip_interests`, `itinerary_days` (RLS policies included in migration).
 
@@ -92,7 +92,7 @@ cd frontend && npm install && npm run dev
 **Goal:** Save, manage, and share trips.
 
 - [x] **5.1a** `POST /api/trips` + **Save trip** in UI (after sign-in)
-- [ ] **5.1b** Verified row persisted in live Supabase
+- [x] **5.1b** Verified row persisted in live Supabase
 - [x] **5.2a** `GET /api/trips` backend endpoint
 - [x] **5.2b** **My trips** UI (list + open saved itinerary)
 - [x] **5.2c** `GET /api/trips/{trip_id}` for full itinerary load
@@ -114,7 +114,7 @@ Per course pre-requisites: **frontend → Vercel**, **backend → Render**.
 - [x] **6.2** Frontend on Vercel — https://frontend-three-sage-86vb7v4ibz.vercel.app
 - [x] **6.3** `CORS_ORIGINS` on Render includes Vercel URL (set in dashboard → redeploy)
 - [x] **6.4** Service role key only on backend; anon key on frontend (by design)
-- [ ] **6.5** Demo link + GitHub link on Skill Wallet dashboard (GitHub ready to paste)
+- [x] **6.5** Demo link + GitHub link on Skill Wallet dashboard
 
 ---
 
@@ -122,7 +122,7 @@ Per course pre-requisites: **frontend → Vercel**, **backend → Render**.
 
 **Goal:** Submission-ready quality.
 
-- [ ] **7.1** End-to-end: preferences → generate → export → save (with auth)
+- [x] **7.1** End-to-end: preferences → generate → export → save (with auth)
 - [ ] **7.2** RLS verified (user A cannot read user B’s trips)
 - [x] **7.3** `README.md` (structure, local run, deploy overview)
 - [ ] **7.4** *(Optional)* Screen recording for submission
@@ -156,10 +156,10 @@ Rough effort: **~2–3 focused days** remaining (Supabase redirect + save E2E, C
 - [x] Public GitHub repository — https://github.com/rokar0028/travel-itinerary-planner
 - [x] Live React app (Vercel) — see Epic 6.2
 - [x] Live FastAPI (Render) — see Epic 6.1
-- [x] Supabase schema applied + RLS; [ ] authenticated save verified in browser
+- [x] Supabase schema applied + RLS; authenticated save verified in browser
 - [x] Personalized multi-day itinerary from preferences
 - [x] Export (Markdown); saved trips API + **My trips** UI
-- [ ] Links added in Skill Wallet
+- [x] Links added in Skill Wallet
 
 ---
 

@@ -8,9 +8,7 @@
 
 ### You are here (next actions)
 
-1. **[2C]** Set Supabase redirect URLs → [scripts/supabase-auth-urls.md](./scripts/supabase-auth-urls.md) (required for magic link).
-2. **[3.2]** Incognito on Vercel: sign in → Save trip → My trips.
-3. **[4]** Paste links from [SKILL_WALLET.md](./SKILL_WALLET.md) into Skill Wallet.
+**Capstone submit:** Phases 0–4 complete. Optional follow-ups → [Phase 5](#phase-5--post-submit-optional-same-week).
 
 ---
 
@@ -77,8 +75,8 @@ Wire frontend → API → Supabase so generate and save work on the **deployed**
 
 Dashboard → **Authentication** → **URL configuration**
 
-- [ ] **2C.1** **Redirect URLs:** `https://{VERCEL_HOST}/**` and `http://localhost:5173/**`
-- [ ] **2C.2** **Site URL:** Vercel production URL (for production testing)
+- [x] **2C.1** **Redirect URLs:** `https://{VERCEL_HOST}/**` and `http://localhost:5173/**`
+- [x] **2C.2** **Site URL:** Vercel production URL (for production testing)
 
 **Verify:** Magic link in email lands on your Vercel app and shows signed-in state.
 
@@ -100,7 +98,7 @@ Run in **incognito** on the **Vercel** URL. Record pass/fail.
 | 6 | Refresh → **My trips** | Trip listed; open → same itinerary |
 
 - [x] **3.1** Steps 1–3 (guest path) — **required for minimum submit**
-- [ ] **3.2** Steps 4–6 (auth + save) — **required for full capstone story**
+- [x] **3.2** Steps 4–6 (auth + save) — **required for full capstone story**
 - [x] **3.3** Optional: **Jaipur** + one other city — run `.\scripts\phase3-smoke.ps1` (API); confirm in UI if desired
 
 **If save fails:** note status code and message → see [Troubleshooting](#troubleshooting) below.
@@ -113,10 +111,10 @@ Run in **incognito** on the **Vercel** URL. Record pass/fail.
 
 Copy from **[SKILL_WALLET.md](./SKILL_WALLET.md)**.
 
-- [ ] **4.1** Skill Wallet: paste **GitHub** repo URL
-- [ ] **4.2** Skill Wallet: paste **Vercel demo** URL (from Phase 0.4)
-- [ ] **4.3** README / IMPLEMENTATION_PLAN: mark **2.6**, **6.3**, **7.1** done if Phase 3 passed
-- [ ] **4.4** Push doc updates to GitHub
+- [x] **4.1** Skill Wallet: paste **GitHub** repo URL
+- [x] **4.2** Skill Wallet: paste **Vercel demo** URL (from Phase 0.4)
+- [x] **4.3** README / IMPLEMENTATION_PLAN: mark **2.6**, **6.3**, **7.1** done if Phase 3 passed
+- [x] **4.4** Push doc updates to GitHub
 
 **Done when:** Dashboard links work in a fresh browser.
 

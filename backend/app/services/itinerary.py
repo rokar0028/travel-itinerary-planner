@@ -1,3 +1,4 @@
+import re
 from datetime import date, timedelta
 from typing import TypedDict
 
@@ -20,6 +21,73 @@ STYLES = [
 ]
 
 KNOWN_DESTINATIONS = frozenset({"goa", "jaipur"})
+
+# Template copy stays local for these places. Other cities get neutral wording.
+INDIA_DESTINATIONS = frozenset(
+    {
+        "agra",
+        "ahmedabad",
+        "alappuzha",
+        "alleppey",
+        "amritsar",
+        "andaman",
+        "aurangabad",
+        "bangalore",
+        "bengaluru",
+        "bhopal",
+        "calcutta",
+        "chandigarh",
+        "chennai",
+        "cochin",
+        "coimbatore",
+        "darjeeling",
+        "delhi",
+        "gangtok",
+        "goa",
+        "gurgaon",
+        "gurugram",
+        "hampi",
+        "hyderabad",
+        "india",
+        "indore",
+        "jaipur",
+        "jaisalmer",
+        "jodhpur",
+        "kerala",
+        "kochi",
+        "kolkata",
+        "ladakh",
+        "leh",
+        "lucknow",
+        "madurai",
+        "madras",
+        "manali",
+        "mumbai",
+        "munnar",
+        "mysore",
+        "mysuru",
+        "nagpur",
+        "nashik",
+        "noida",
+        "ooty",
+        "pondicherry",
+        "port blair",
+        "puducherry",
+        "pune",
+        "pushkar",
+        "ranthambore",
+        "rishikesh",
+        "shillong",
+        "shimla",
+        "surat",
+        "thiruvananthapuram",
+        "trivandrum",
+        "udaipur",
+        "varanasi",
+        "visakhapatnam",
+        "vizag",
+    }
+)
 
 
 class SlotPlan(TypedDict):
@@ -137,9 +205,36 @@ STYLE_TRANSPORT: dict[str, str] = {
     "Luxury": "Chauffeur or premium cab; confirm hotel concierge pickups.",
 }
 
+# Same slots without India-only food, markets, or transport.
+NEUTRAL_MORNING: dict[str, str] = {
+    "Food & street eats": "Breakfast crawl — local bakery, café, and one signature dish.",
+    "Shopping": "Craft market or neighbourhood shops while the morning is quiet.",
+}
+NEUTRAL_AFTERNOON: dict[str, str] = {
+    "Food & street eats": "Market lunch — a regional specialty or a busy local counter.",
+    "Shopping": "Neighbourhood shops or an artisan workshop.",
+}
+NEUTRAL_EVENING: dict[str, str] = {
+    "Shopping": "Evening market or artisan stalls for last-minute gifts.",
+}
+NEUTRAL_DINNER: dict[str, str] = {
+    "Budget backpacker": "casual local plates — follow the busy spots",
+}
+NEUTRAL_TRANSPORT: dict[str, str] = {
+    "Budget backpacker": "Walk and use public transit; a rideshare for longer hops.",
+}
+
 
 def _destination_key(destination: str) -> str:
     return destination.strip().lower()
+
+
+def _is_india_destination(destination: str) -> bool:
+    key = _destination_key(destination)
+    if key in INDIA_DESTINATIONS:
+        return True
+    parts = {part for part in re.split(r"[^a-z0-9]+", key) if part}
+    return bool(parts & INDIA_DESTINATIONS)
 
 
 def _daily_budget(budget: int, days: int, group_size: int) -> int:
@@ -152,8 +247,11 @@ def _tips(
     group_size: int,
     daily_budget: int,
     interests: list[str],
+    *,
+    india: bool = True,
 ) -> str:
-    transport = STYLE_TRANSPORT.get(style, STYLE_TRANSPORT["Balanced"])
+    transport_map = STYLE_TRANSPORT if india else {**STYLE_TRANSPORT, **NEUTRAL_TRANSPORT}
+    transport = transport_map.get(style, transport_map["Balanced"])
     interest_hint = interests[0] if interests else "sightseeing"
     return (
         f"Group of {group_size} · ~₹{daily_budget:,}/person today · "
@@ -215,7 +313,14 @@ def _build_template(
     group_size: int,
 ) -> list[dict]:
     dest = destination.strip() or "your destination"
-    dinner = STYLE_DINNER.get(style, STYLE_DINNER["Balanced"])
+    india = _is_india_destination(dest)
+    morning_copy = {**INTEREST_MORNING, **NEUTRAL_MORNING} if not india else INTEREST_MORNING
+    afternoon_copy = (
+        {**INTEREST_AFTERNOON, **NEUTRAL_AFTERNOON} if not india else INTEREST_AFTERNOON
+    )
+    evening_copy = {**INTEREST_EVENING, **NEUTRAL_EVENING} if not india else INTEREST_EVENING
+    dinner_map = {**STYLE_DINNER, **NEUTRAL_DINNER} if not india else STYLE_DINNER
+    dinner = dinner_map.get(style, dinner_map["Balanced"])
     days_out: list[dict] = []
     for i in range(days):
         d = start + timedelta(days=i)
@@ -223,15 +328,15 @@ def _build_template(
         m_key = interests[i % len(interests)]
         a_key = interests[(i + 1) % len(interests)]
         e_key = interests[(i + 2) % len(interests)]
-        morning = INTEREST_MORNING.get(
+        morning = morning_copy.get(
             m_key,
             f"Morning: explore a headline sight in {dest}",
         ).replace("Breakfast crawl", f"Breakfast crawl in {dest}")
-        afternoon = INTEREST_AFTERNOON.get(
+        afternoon = afternoon_copy.get(
             a_key,
             f"Afternoon: neighbourhood walk and local lunch in {dest}",
         )
-        evening_base = INTEREST_EVENING.get(
+        evening_base = evening_copy.get(
             e_key,
             f"Evening: unwind at a popular district in {dest}",
         )
@@ -247,7 +352,9 @@ def _build_template(
                 "morning": morning,
                 "afternoon": afternoon,
                 "evening": f"{evening_base} · Dinner: {dinner} (~₹{daily_budget}/person).",
-                "tips": _tips(dest, style, group_size, daily_budget, interests),
+                "tips": _tips(
+                    dest, style, group_size, daily_budget, interests, india=india
+                ),
             }
         )
     return days_out

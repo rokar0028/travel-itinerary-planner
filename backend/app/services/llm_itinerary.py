@@ -61,6 +61,8 @@ def _call_llm(
             "instructions": (
                 "Each day needs distinct morning/afternoon/evening activities. "
                 "Tips should mention budget per person and transport. "
+                "Match the destination. Do not mention chai stalls, thali, or "
+                "auto-rickshaws unless the city is in India. "
                 f"Number exactly {days} days; day numbers are assigned server-side."
             ),
         }

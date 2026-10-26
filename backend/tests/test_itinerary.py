@@ -33,6 +33,13 @@ def test_jaipur_curated_copy():
     assert "Amber" in days[0]["morning"] or "Fort" in days[0]["morning"]
 
 
+def _blob(days: list[dict]) -> str:
+    return " ".join(
+        f"{day['morning']} {day['afternoon']} {day['evening']} {day['tips']}"
+        for day in days
+    ).lower()
+
+
 def test_unknown_city_template():
     days = build_itinerary(
         "Mumbai",
@@ -45,3 +52,20 @@ def test_unknown_city_template():
     )
     assert len(days) == 2
     assert all(d["tips"] for d in days)
+    assert "chai" in _blob(days) or "thali" in _blob(days)
+
+
+def test_paris_template_is_city_neutral():
+    days = build_itinerary(
+        "Paris",
+        date(2026, 4, 1),
+        3,
+        20000,
+        "Budget backpacker",
+        ["Food & street eats", "Shopping", "History & culture"],
+        2,
+    )
+    blob = _blob(days)
+    assert "paris" in blob
+    for phrase in ("chai", "thali", "autos", "bazaar", "auto-rickshaw"):
+        assert phrase not in blob

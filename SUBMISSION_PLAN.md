@@ -160,7 +160,7 @@ git status
 git push origin main
 
 # Local smoke (optional)
-cd backend; uvicorn app.main:app --reload --port 8000
+cd backend; uvicorn app.main:app --reload --port 8001
 cd frontend; npm run dev
 cd backend; python -m pytest tests/ -q
 ```

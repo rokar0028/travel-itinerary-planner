@@ -21,7 +21,7 @@ cd backend
 python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
+uvicorn app.main:app --reload --port 8001
 ```
 
 ### Frontend
@@ -32,7 +32,7 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:5173 — API defaults to `http://localhost:8000` (override with `VITE_API_URL`).
+Open http://localhost:5173 — Vite proxies `/api` to `http://localhost:8001` (override with `VITE_API_URL`). Use **8001** if port 8000 is already in use.
 
 **Env files (never commit real keys):**
 

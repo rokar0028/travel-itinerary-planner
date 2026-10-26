@@ -17,7 +17,10 @@ def get_user_client(url: str, anon_key: str, access_token: str) -> Client:
 
 def verify_access_token(url: str, anon_key: str, access_token: str) -> str:
     client = create_client(url, anon_key)
-    response = client.auth.get_user(access_token)
+    try:
+        response = client.auth.get_user(access_token)
+    except Exception:
+        raise ValueError("Invalid or expired session") from None
     if not response or not response.user:
         raise ValueError("Invalid or expired session")
     return str(response.user.id)

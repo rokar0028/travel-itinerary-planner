@@ -34,7 +34,7 @@ Skill Wallet / SmartBridge capstone. Target stack: **React (Vercel)** · **FastA
 ```bash
 # Backend
 cd backend && pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
+uvicorn app.main:app --reload --port 8001
 
 # Frontend
 cd frontend && npm install && npm run dev
